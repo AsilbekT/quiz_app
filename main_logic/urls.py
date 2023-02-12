@@ -1,0 +1,20 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("teams/", views.get_teams, name="get_teams"),
+    path("teams/add/", views.add_team, name="add_team"),
+    path("teams/<int:id>/get-or-update/",
+         views.get_or_update_team, name="get_or_update_team"),
+
+    path("categories/", views.get_categories,
+         name="get_categories"),
+
+    path("categories/questions/",
+         views.get_questions, name="get_questions"),
+
+    path("tournaments/", views.get_tournaments,
+         name="get_tournaments"),
+    path("tournaments/<int:id>/update/", views.update_tournament,
+         name="update_tournament"),
+]

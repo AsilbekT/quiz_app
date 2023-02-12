@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
-import random
+from django.core.exceptions import ValidationError
 
 
 class MyAccountManager(BaseUserManager):
@@ -43,6 +43,10 @@ class Account(AbstractBaseUser):
     username = models.CharField(max_length=30, unique=True)
     date_joined = models.DateTimeField(
         verbose_name='Date joined', auto_now_add=True)
+
+    avatar = models.ImageField(
+        upload_to='static/players_avatar/', default="default.jpg")
+
     last_login = models.DateTimeField(verbose_name='Last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -82,22 +86,6 @@ class Following(models.Model):
     class Meta:
         unique_together = ('user', 'follower')
 
-
-class Group(models.Model):
-    group_code = models.CharField(
-        max_length=10, unique=True, blank=True, null=True)
-    accounts = models.ManyToManyField(Account)
-
-    def __str__(self) -> str:
-        return self.group_code
-
     def save(self, *args, **kwargs):
-        if not self.group_code:
-            while True:
-                unique_number = str(random.randint(10000000, 999999999))
-                try:
-                    Group.objects.get(group_code=unique_number)
-                except Group.DoesNotExist:
-                    self.group_code = unique_number
-                    break
-        super().save(*args, **kwargs)
+        if self.user != self.follower:
+            super().save(*args, **kwargs)

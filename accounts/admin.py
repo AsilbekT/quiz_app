@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from accounts.models import Account, Following, Group
+from accounts.models import Account, Following
 
 
 class AccountAdmin(UserAdmin):
@@ -20,4 +20,3 @@ class FollowingAdmin(admin.ModelAdmin):
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Following, FollowingAdmin)
-admin.site.register(Group)
