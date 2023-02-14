@@ -94,6 +94,7 @@ DATABASES = {
     }
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURITY_SCHEME_NAME = "https"
 
 # Password validation
