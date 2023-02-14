@@ -93,7 +93,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+SWAGGER_SETTINGS = {
+    'VALIDATOR_URL': 'https://quiz.camuf.uz/',
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
