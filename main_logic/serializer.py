@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from accounts.models import Account
-from .models import Team
+from .models import Category, Question, Team, Tournament
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -57,3 +57,39 @@ class TeamSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = [
+            'id',
+            'type'
+        ]
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = [
+            'question',
+            'question_type',
+            'answer',
+            'option1',
+            'option2',
+            'option3',
+            'option4'
+        ]
+
+
+class TournamentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tournament
+        fields = [
+            'id',
+            'tournament_code',
+            'tournament_teams',
+            'tournament_price',
+            'categories',
+            'is_active',
+        ]

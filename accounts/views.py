@@ -3,9 +3,11 @@ from rest_framework.response import Response
 from .models import Account
 from .serializer import FollowingsSerializer, PlayerFriendshipSerializer, PlayerSerializer, PlayersSerializer
 from django.core.exceptions import ObjectDoesNotExist
+from drf_yasg.utils import swagger_auto_schema
 # Create your views here.
 
 
+@swagger_auto_schema(method='get', responses={200: PlayersSerializer(many=True)})
 @api_view(['GET'])
 def get_users(request) -> Response:
     players = Account.objects.filter(is_active=True)
@@ -19,6 +21,7 @@ def get_users(request) -> Response:
     return Response(data)
 
 
+@swagger_auto_schema(method='get', responses={200: PlayerSerializer})
 @api_view(['GET'])
 def get_user(request, id) -> Response:
     try:
@@ -30,6 +33,7 @@ def get_user(request, id) -> Response:
     return Response(serialized_players)
 
 
+@swagger_auto_schema(method='get', responses={200: PlayerFriendshipSerializer})
 @api_view(['GET'])
 def get_friendships(request, id) -> Response:
     try:
@@ -41,6 +45,7 @@ def get_friendships(request, id) -> Response:
     return Response(serialized_players)
 
 
+@swagger_auto_schema(methods=['post'], request_body=FollowingsSerializer)
 @api_view(['POST'])
 def add_friendship(request) -> Response:
     data = {}

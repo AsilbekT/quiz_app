@@ -2,19 +2,21 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from main_logic.models import Team
-from main_logic.serializer import TeamSerializer, TeamsSerializer
+from main_logic.models import Category, Question, Team, Tournament
+from main_logic.serializer import CategorySerializer, QuestionSerializer, TeamSerializer, TeamsSerializer, TournamentSerializer
 from django.core.exceptions import ObjectDoesNotExist
-
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 # Create your views here.
 
 
+@swagger_auto_schema(method='get', responses={200: TeamsSerializer(many=True)})
 @api_view(['GET'])
 def get_teams(request) -> Response:
     """
     Retrieve the data of all teams.
 
-    This function retrieves the data of all teams stored in the database. The returned data includes the name of the team, 
+    This function retrieves the data of all teams stored in the database. The returned data includes the name of the team,
     the leader's ID, the team's avatar URL, and a list of team members' IDs, names, and avatar URLs.
 
     Returns:
@@ -72,8 +74,19 @@ def get_teams(request) -> Response:
     return Response(serializer.data)
 
 
+@swagger_auto_schema(methods=['post'], request_body=TeamSerializer)
 @api_view(['POST'])
 def add_team(request):
+    """
+    Add a new team using the POST method.
+
+    This function is used to create a new team.
+    Args:   
+        team_name,
+        team_leader,
+        team_avatar,
+        members
+    """
     serializer = TeamSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -81,15 +94,22 @@ def add_team(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+team_param = openapi.Parameter(
+    'team', openapi.IN_QUERY, description="team manual param", type=openapi.TYPE_BOOLEAN)
+user_response = openapi.Response('response description', TeamSerializer)
+
+
+# @swagger_auto_schema(method='get', manual_parameters=[team_param], responses={200: user_response})
+@swagger_auto_schema(methods=['put', 'delete'], request_body=TeamSerializer)
 @api_view(['PUT', 'GET', 'DELETE'])
 def get_or_update_team(request, id) -> Response:
     """
     Update or retrieve a team using the PUT, GET, or DELETE methods.
 
-    This function allows you to either retrieve the data of an existing team by GET request. 
-    If the specified team already exists, you can update its data by sending a PUT request. 
-    To delete a team, send a DELETE request. 
-    The required parameters for either getting or updating a team are the name of the team and the ID of the team leader. 
+    This function allows you to either retrieve the data of an existing team by GET request.
+    If the specified team already exists, you can update its data by sending a PUT request.
+    To delete a team, send a DELETE request.
+    The required parameters for either getting or updating a team are the name of the team and the ID of the team leader.
     Optionally, a list of IDs for team members can be included in the request.
 
     Args:
@@ -105,8 +125,8 @@ def get_or_update_team(request, id) -> Response:
                 team_leader (int),
                 team_avatar (str),
                 members (list).
-            message (str): 
-                if a new team was created, "updated" if an existing team was updated, 
+            message (str):
+                if a new team was created, "updated" if an existing team was updated,
                 or "deleted" if the team was deleted.
 
     Examples:
@@ -163,25 +183,40 @@ def get_or_update_team(request, id) -> Response:
         return Response({"message": "deleted"}, status=status.HTTP_201_CREATED)
 
 
+@swagger_auto_schema(method='get', responses={200: CategorySerializer(many=True)})
 @api_view(['GET'])
 def get_categories(request):
+    """
+    Retrieve the data of all categories.
+    """
+    catagories_obj = Category.objects.all()
+    serializer = CategorySerializer(catagories_obj, many=True)
+    return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({"data": None})
 
-
-@api_view(['GET', 'POST'])
+@swagger_auto_schema(method='get', responses={200: QuestionSerializer(many=True)})
+@api_view(['GET'])
 def get_questions(request):
+    """
+    Retrieve the data of all questions.
+    """
+    questions = Question.objects.all()
+    serializer = QuestionSerializer(questions, many=True)
+    return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({"data": None})
 
-
-@api_view(['GET', 'POST'])
+@swagger_auto_schema(method='get', responses={200: TournamentSerializer(many=True)})
+@api_view(['GET'])
 def get_tournaments(request):
+    """
+    Retrieve the data of all tournaments.
+    """
+    tournaments = Tournament.objects.all()
+    serializer = TournamentSerializer(tournaments, many=True)
+    return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({"data": None})
 
-
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def update_tournament(request, id):
 
     return Response({"data": None})

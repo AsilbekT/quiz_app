@@ -18,13 +18,13 @@ class Team(models.Model):
         return self.team_name
 
 
-class QuestionType(models.Model):
+class Category(models.Model):
     type = models.CharField(max_length=100)
 
 
 class Question(models.Model):
     question = models.TextField()
-    question_type = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
+    question_type = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     answer = models.CharField(max_length=200, blank=True, null=True)
 
@@ -40,8 +40,8 @@ class Tournament(models.Model):
     tournament_teams = models.ManyToManyField(
         Team, blank=True, related_name='tournament_teams')
     tournament_price = models.CharField(max_length=100)
-    questiontypes = models.ManyToManyField(
-        QuestionType, related_name="questiontype")
+    categories = models.ManyToManyField(
+        Category, related_name="categories")
     is_active = models.BooleanField(default=False)
 
     def __str__(self) -> str:
