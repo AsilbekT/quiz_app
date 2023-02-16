@@ -5,6 +5,8 @@ from .serializer import FollowingsSerializer, PlayerFriendshipSerializer, Player
 from django.core.exceptions import ObjectDoesNotExist
 from drf_yasg.utils import swagger_auto_schema
 from django.core.cache import cache
+from rest_framework import status
+
 # Create your views here.
 
 
@@ -22,7 +24,7 @@ def get_users(request) -> Response:
         'players_count': players_count,
         'all_players':  serialized_players
     }
-    return Response(data)
+    return Response(data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(method='get', responses={200: PlayerSerializer})
@@ -37,7 +39,7 @@ def get_user(request, id) -> Response:
         serialized_players = serializer.data
     except ObjectDoesNotExist:
         serialized_players = {}
-    return Response(serialized_players)
+    return Response(serialized_players, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(method='get', responses={200: PlayerFriendshipSerializer})
@@ -49,7 +51,7 @@ def get_friendships(request, id) -> Response:
         serialized_players = serializer.data
     except ObjectDoesNotExist:
         serialized_players = {}
-    return Response(serialized_players)
+    return Response(serialized_players, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(methods=['post'], request_body=FollowingsSerializer)
@@ -64,6 +66,6 @@ def add_friendship(request) -> Response:
                 data['response'] = 'successfully registered new user.'
             else:
                 data = serializer.errors
-            return Response(data)
+            return Response(data, status=status.HTTP_200_OK)
         else:
             return Response({'error': "users cannot follow themselves!"})

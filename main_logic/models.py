@@ -20,6 +20,7 @@ class Team(models.Model):
 
 class Category(models.Model):
     type = models.CharField(max_length=100)
+    file = models.FileField(default="asd.txt", blank=True, null=True)
 
 
 class Question(models.Model):
