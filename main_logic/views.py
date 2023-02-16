@@ -71,7 +71,7 @@ def get_teams(request) -> Response:
     """
     teams = Team.objects.all()
     serializer = TeamsSerializer(teams, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(methods=['post'], request_body=TeamSerializer)
@@ -92,11 +92,6 @@ def add_team(request):
         serializer.save()
         return Response({"message": "created"}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-team_param = openapi.Parameter(
-    'team', openapi.IN_QUERY, description="team manual param", type=openapi.TYPE_BOOLEAN)
-user_response = openapi.Response('response description', TeamSerializer)
 
 
 # @swagger_auto_schema(method='get', manual_parameters=[team_param], responses={200: user_response})
@@ -169,18 +164,18 @@ def get_or_update_team(request, id) -> Response:
 
     if request.method == 'GET':
         serializer = TeamSerializer(team)
-        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
         serializer = TeamSerializer(team, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "updated"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "updated"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     else:
         team.delete()
-        return Response({"message": "deleted"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "deleted"}, status=status.HTTP_202_ACCEPTED)
 
 
 @swagger_auto_schema(method='get', responses={200: CategorySerializer(many=True)})
@@ -191,7 +186,7 @@ def get_categories(request):
     """
     catagories_obj = Category.objects.all()
     serializer = CategorySerializer(catagories_obj, many=True)
-    return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(method='get', responses={200: QuestionSerializer(many=True)})
@@ -202,7 +197,7 @@ def get_questions(request):
     """
     questions = Question.objects.all()
     serializer = QuestionSerializer(questions, many=True)
-    return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(method='get', responses={200: TournamentSerializer(many=True)})
@@ -213,7 +208,7 @@ def get_tournaments(request):
     """
     tournaments = Tournament.objects.all()
     serializer = TournamentSerializer(tournaments, many=True)
-    return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

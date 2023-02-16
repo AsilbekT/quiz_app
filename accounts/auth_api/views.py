@@ -8,6 +8,8 @@ from rest_framework.compat import coreapi, coreschema
 from rest_framework.schemas import ManualSchema
 from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.views import APIView
+from django.core.cache import cache
+from rest_framework import status
 
 
 @api_view(['POST', ])
@@ -98,5 +100,9 @@ class ObtainAuthToken(APIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
+        token = cache.get('token')
+        if token is None:
+            token, created = Token.objects.get_or_create(user=user)
+            cache.set('token', token)
+        print(token)
         return Response({'token': token.key})
