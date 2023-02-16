@@ -4,13 +4,17 @@ from .models import Account
 from .serializer import FollowingsSerializer, PlayerFriendshipSerializer, PlayerSerializer, PlayersSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from drf_yasg.utils import swagger_auto_schema
+from django.core.cache import cache
 # Create your views here.
 
 
 @swagger_auto_schema(method='get', responses={200: PlayersSerializer(many=True)})
 @api_view(['GET'])
 def get_users(request) -> Response:
-    players = Account.objects.filter(is_active=True)
+    players = cache.get('players')
+    if players is None:
+        players = Account.objects.filter(is_active=True)
+        cache.set('players', players)
     serializer = PlayersSerializer(players, many=True)
     serialized_players = serializer.data
     players_count = players.count()
@@ -25,7 +29,10 @@ def get_users(request) -> Response:
 @api_view(['GET'])
 def get_user(request, id) -> Response:
     try:
-        player = Account.objects.get(id=id)
+        player = cache.get('player')
+        if player is None:
+            player = Account.objects.get(id=id)
+            cache.set('player', player)
         serializer = PlayerSerializer(player)
         serialized_players = serializer.data
     except ObjectDoesNotExist:
