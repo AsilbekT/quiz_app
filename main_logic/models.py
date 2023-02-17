@@ -9,18 +9,25 @@ class Team(models.Model):
     team_leader = models.OneToOneField(
         Account, on_delete=models.CASCADE, related_name='team_leader')
 
-    members = models.ManyToManyField(
-        Account, blank=True, related_name='members')
     team_avatar = models.ImageField(
         upload_to="static/teams_avatar/", default='teams.jpg')
+
+    class Meta:
+        unique_together = ('team_name',)
 
     def __str__(self) -> str:
         return self.team_name
 
 
+class TeamMembership(models.Model):
+    team = models.ForeignKey(
+        Team, on_delete=models.CASCADE, related_name='team')
+    member = models.OneToOneField(
+        Account, on_delete=models.CASCADE, related_name='member')
+
+
 class Category(models.Model):
     type = models.CharField(max_length=100)
-    file = models.FileField(default="asd.txt", blank=True, null=True)
 
 
 class Question(models.Model):

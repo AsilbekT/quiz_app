@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Account, Following
+from main_logic.serializer import TeamsSerializer, TeamMembershipsSerializer
 
 
 class FollowingsSerializer(serializers.ModelSerializer):
@@ -47,6 +48,7 @@ class PlayersSerializer(serializers.ModelSerializer):
 class PlayerSerializer(serializers.ModelSerializer):
     followings_count = serializers.IntegerField(read_only=True)
     followers_count = serializers.IntegerField(read_only=True)
+    joined_team = serializers.CharField(allow_blank=True, read_only=True)
 
     class Meta:
         model = Account
@@ -58,12 +60,15 @@ class PlayerSerializer(serializers.ModelSerializer):
             'last_login',
             'followings_count',
             'followers_count',
+            'joined_team',
         ]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['followings_count'] = instance.following.count()
         representation['followers_count'] = instance.followers.count()
+        representation['joined_team'] = TeamMembershipsSerializer(
+            instance.get_team_membership()).data
         return representation
 
 

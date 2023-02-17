@@ -12,7 +12,7 @@ from django.core.cache import cache
 from rest_framework import status
 
 
-@api_view(['POST', ])
+@api_view(['POST'])
 def registration_view(request):
     ManualSchema(
         fields=[

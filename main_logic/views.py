@@ -211,7 +211,9 @@ def get_tournaments(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-def update_tournament(request, id):
+@api_view(['GET'])
+def get_tournament(request, id):
+    tournament = Tournament.objects.get(id=id)
+    serializer = TournamentSerializer(tournament)
 
-    return Response({"data": None})
+    return Response(serializer.data, status=status.HTTP_200_OK)

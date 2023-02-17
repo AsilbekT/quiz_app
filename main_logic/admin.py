@@ -3,11 +3,16 @@ from .models import (
     Team,
     Tournament,
     Category,
-    # Question
+    TeamMembership
 )
+
+
+class TeamMembershipAdmin(admin.ModelAdmin):
+    list_display = ('team', 'member')
+
 
 # Register your models here.
 admin.site.register(Team)
 admin.site.register(Tournament)
 admin.site.register(Category)
-# admin.site.register(Question)
+admin.site.register(TeamMembership, TeamMembershipAdmin)

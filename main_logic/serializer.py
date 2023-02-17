@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from accounts.models import Account
-from .models import Category, Question, Team, Tournament
+from .models import Category, Question, Team, Tournament, TeamMembership
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -14,8 +14,14 @@ class MemberSerializer(serializers.ModelSerializer):
         ]
 
 
+class TeamMembershipsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamMembership
+        fields = ['team', 'member']
+
+
 class TeamsSerializer(serializers.ModelSerializer):
-    members = MemberSerializer(many=True, read_only=True)
+    members = serializers.CharField(read_only=True)
 
     class Meta:
         model = Team
@@ -29,12 +35,14 @@ class TeamsSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['members'] = MemberSerializer(
-            instance.members.all(), many=True).data
+        representation['members'] = TeamMembershipsSerializer(
+            instance.team.all(), many=True).data
         return representation
 
 
 class TeamSerializer(serializers.ModelSerializer):
+    members = serializers.CharField(read_only=True)
+
     class Meta:
         model = Team
         fields = [
@@ -49,7 +57,7 @@ class TeamSerializer(serializers.ModelSerializer):
         """
         Update and return an existing `TeamSerializer` instance, given the validated data.
         """
-        [instance.members.add(i.id) for i in validated_data.get('members')]
+        # [instance.members.add(i.id) for i in validated_data.get('members')]
         instance.team_name = validated_data.get(
             'team_name', instance.team_name)
         instance.team_leader = validated_data.get(
@@ -57,6 +65,12 @@ class TeamSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['members'] = TeamMembershipsSerializer(
+            instance.team.all(), many=True).data
+        return representation
 
 
 class CategorySerializer(serializers.ModelSerializer):
