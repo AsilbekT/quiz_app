@@ -1,17 +1,12 @@
 from rest_framework import serializers
 
-from accounts.models import Account
-from .models import Category, Question, Team, Tournament, TeamMembership
-
-
-class MemberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Account
-        fields = [
-            'id',
-            'username',
-            'avatar'
-        ]
+from .models import (
+    Category,
+    Question,
+    Team,
+    Tournament,
+    TeamMembership
+)
 
 
 class TeamMembershipsSerializer(serializers.ModelSerializer):
@@ -97,6 +92,8 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class TournamentSerializer(serializers.ModelSerializer):
+    tournament_teams = TeamSerializer(read_only=True)
+
     class Meta:
         model = Tournament
         fields = [
@@ -107,3 +104,9 @@ class TournamentSerializer(serializers.ModelSerializer):
             'categories',
             'is_active',
         ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['tournament_teams'] = TeamSerializer(
+            instance.tournament_teams.all(), many=True).data
+        return representation

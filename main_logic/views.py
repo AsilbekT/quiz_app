@@ -1,13 +1,24 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from main_logic.models import Category, Question, Team, Tournament
-from main_logic.serializer import CategorySerializer, QuestionSerializer, TeamSerializer, TeamsSerializer, TournamentSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-# Create your views here.
+
+from main_logic.models import (
+    Category,
+    Question,
+    Team,
+    Tournament
+)
+
+from main_logic.serializer import (
+    CategorySerializer,
+    QuestionSerializer,
+    TeamSerializer,
+    TeamsSerializer,
+    TournamentSerializer
+)
+# views below.
 
 
 @swagger_auto_schema(method='get', responses={200: TeamsSerializer(many=True)})
@@ -211,6 +222,7 @@ def get_tournaments(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@swagger_auto_schema(method='get', responses={200: TournamentSerializer})
 @api_view(['GET'])
 def get_tournament(request, id):
     tournament = Tournament.objects.get(id=id)

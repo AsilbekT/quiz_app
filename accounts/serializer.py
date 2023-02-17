@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Account, Following
-from main_logic.serializer import TeamsSerializer, TeamMembershipsSerializer
+from main_logic.serializer import TeamMembershipsSerializer
 
 
 class FollowingsSerializer(serializers.ModelSerializer):

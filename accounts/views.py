@@ -1,13 +1,23 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Account
-from .serializer import FollowingsSerializer, PlayerFriendshipSerializer, PlayerSerializer, PlayersSerializer
-from django.core.exceptions import ObjectDoesNotExist
-from drf_yasg.utils import swagger_auto_schema
-from django.core.cache import cache
 from rest_framework import status
 
-# Create your views here.
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.cache import cache
+
+from drf_yasg.utils import swagger_auto_schema
+
+from .models import Account
+
+from .serializer import (
+    FollowingsSerializer,
+    PlayerFriendshipSerializer,
+    PlayerSerializer,
+    PlayersSerializer
+)
+
+
+# views here.
 
 
 @swagger_auto_schema(method='get', responses={200: PlayersSerializer(many=True)})
