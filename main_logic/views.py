@@ -202,11 +202,12 @@ def get_categories(request):
 
 @swagger_auto_schema(method='get', responses={200: QuestionSerializer(many=True)})
 @api_view(['GET'])
-def get_questions(request):
+def get_questions(request, id):
     """
     Retrieve the data of all questions.
     """
-    questions = Question.objects.all()
+    categories = Category.objects.get(id=id)
+    questions = categories.category_questions.all()
     serializer = QuestionSerializer(questions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 

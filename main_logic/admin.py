@@ -4,7 +4,8 @@ from .models import (
     Tournament,
     Category,
     TeamMembership,
-    Question
+    Question,
+    Option
 )
 
 
@@ -13,7 +14,7 @@ class TeamMembershipAdmin(admin.ModelAdmin):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('question', 'question_type')
+    list_display = ('question_text', 'category')
 
 
 # Register your models here.
@@ -21,4 +22,5 @@ admin.site.register(Team)
 admin.site.register(Tournament)
 admin.site.register(Category)
 admin.site.register(Question, QuestionAdmin)
+admin.site.register(Option)
 admin.site.register(TeamMembership, TeamMembershipAdmin)

@@ -26,25 +26,50 @@ class TeamMembership(models.Model):
         Account, on_delete=models.CASCADE, related_name='member')
 
 
-class TeamChat(TeamMembership):
-    text = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+# class TeamChat(models.Model):
+#     membership = models.ForeignKey(
+#         TeamMembership, on_delete=models.CASCADE, related_name='chats')
+#     text = models.TextField()
+#     timestamp = models.DateTimeField(auto_now_add=True)
 
 
 class Category(models.Model):
-    type = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    def get_questions(self):
+        return self.question_set.all()
+
+    def get_multiple_choice_questions(self):
+        return self.question_set.filter(options__isnull=False).distinct()
 
 
 class Question(models.Model):
-    question = models.TextField()
-    question_type = models.ForeignKey(Category, on_delete=models.CASCADE)
-
+    question_text = models.TextField()
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="category_questions")
     answer = models.CharField(max_length=200, blank=True, null=True)
 
-    option1 = models.BooleanField(default=False)
-    option2 = models.BooleanField(default=False)
-    option3 = models.BooleanField(default=False)
-    option4 = models.BooleanField(default=False)
+    def __str__(self) -> str:
+        return self.question_text
+
+    def is_multiple_choice(self):
+        return self.options.count() > 0
+
+    def get_options(self):
+        return self.options.all()
+
+
+class Option(models.Model):
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='options')
+    option_text = models.CharField(max_length=200)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.option_text
 
 
 class Tournament(models.Model):

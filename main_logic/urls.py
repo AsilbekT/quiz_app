@@ -10,7 +10,7 @@ urlpatterns = [
     path("categories/", views.get_categories,
          name="get_categories"),
 
-    path("categories/questions/",
+    path("categories/<int:id>/questions/",
          views.get_questions, name="get_questions"),
 
     path("tournaments/", views.get_tournaments,

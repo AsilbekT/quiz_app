@@ -5,7 +5,8 @@ from .models import (
     Question,
     Team,
     Tournament,
-    TeamMembership
+    TeamMembership,
+    Option
 )
 
 
@@ -73,22 +74,37 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = [
             'id',
-            'type'
+            'name'
+        ]
+
+
+class QuestionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+        fields = [
+            'question',
+            'option_text',
+            'is_correct'
         ]
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    options = QuestionOptionSerializer(read_only=True, many=True)
+
     class Meta:
         model = Question
         fields = [
-            'question',
-            'question_type',
+            'question_text',
+            'category',
             'answer',
-            'option1',
-            'option2',
-            'option3',
-            'option4'
+            'options'
         ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['options'] = QuestionOptionSerializer(
+            instance.options.all(), many=True).data
+        return representation
 
 
 class TournamentSerializer(serializers.ModelSerializer):
