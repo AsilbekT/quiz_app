@@ -26,6 +26,11 @@ class TeamMembership(models.Model):
         Account, on_delete=models.CASCADE, related_name='member')
 
 
+class TeamChat(TeamMembership):
+    text = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
 class Category(models.Model):
     type = models.CharField(max_length=100)
 
