@@ -206,10 +206,13 @@ def get_questions(request, id):
     """
     Retrieve the data of all questions.
     """
-    categories = Category.objects.get(id=id)
-    questions = categories.category_questions.all()
-    serializer = QuestionSerializer(questions, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    try:
+        categories = Category.objects.get(id=id)
+        questions = categories.category_questions.all()
+        serializer = QuestionSerializer(questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist:
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
 @swagger_auto_schema(method='get', responses={200: TournamentSerializer(many=True)})
@@ -218,15 +221,20 @@ def get_tournaments(request):
     """
     Retrieve the data of all tournaments.
     """
-    tournaments = Tournament.objects.all()
-    serializer = TournamentSerializer(tournaments, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    try:
+        tournaments = Tournament.objects.all()
+        serializer = TournamentSerializer(tournaments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist:
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
 @swagger_auto_schema(method='get', responses={200: TournamentSerializer})
 @api_view(['GET'])
 def get_tournament(request, id):
-    tournament = Tournament.objects.get(id=id)
-    serializer = TournamentSerializer(tournament)
-
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    try:
+        tournament = Tournament.objects.get(id=id)
+        serializer = TournamentSerializer(tournament)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist:
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
