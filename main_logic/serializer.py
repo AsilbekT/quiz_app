@@ -96,7 +96,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = [
             'question_text',
             'category',
-            'answer',
             'options'
         ]
 

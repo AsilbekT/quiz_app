@@ -50,7 +50,6 @@ class Question(models.Model):
     question_text = models.TextField()
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="category_questions")
-    answer = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.question_text

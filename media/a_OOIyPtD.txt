@@ -1,0 +1,88 @@
+ADABIYOT
+#Qaysi asar dastlab “Dovdirash” nomi ostida chop etilgan
+$Bolalik
+&Shum bola
+$Qiyomat qarz
+$Ot kishnagan oqshom
+
+#Quyidagilarning qaysi biri adabiy atama hisoblanmaydi
+$Parabola
+$Fabula
+$Epilog
+&Diffuziya
+
+#Qaysi  asarda journalist Rahimjon Saidiyning hayoti tasvirlangan?
+&Sarob
+$Yoz yomg’iri
+$Oltin zanglamas
+$Sinchalak
+
+#Navoiyning qaysi asari turkey va forsiy tillarni o’zaro 
+solishtirisdh natijasida paydo bo’lgan?
+$Nasoyim ul-muhabbat
+$Mahbub ul-qulub
+&Muhokamat ul-lug’atayn
+$Xazoyim ul-maoniy
+
+# “O’tgan kunlar” romanidagi Xo’shro’ybibi kim edi
+$Kumushning opasi
+&Zaynabning opasi
+$O’zbekoyim cho’risi
+$Homidni xolasi
+
+#Tatar millatiga mansub Nagima Xamsiyevna kimning onasi hisoblanadi?
+$Aleksandr Pushkin
+$To’rob To’la
+&Chingiz Aytmatov
+$Abay
+
+#Gargantyua va Pantagruel asari muallifi kim?
+&Fransua Rable
+$Onor de Balzak
+$Aleksandr Dyuma
+$Stendal
+
+#1913-yilda adabiyot bo’yicha Nobel mukofotini qaysi adib qo’lga 
+kiritgan?
+$Rudyard Kipling
+$Roman Rolland
+$Bernard Shou
+&Robindranad Tagor
+
+#Qaysi yunon masal janrida ijod qilgan?
+$Sofokl
+&Ezop
+$Esxil
+$Aristofan
+#Shaharda bir kunda 6000 dan ortiq kalamush o’ligi topilganligi 
+haqidagi ma’lumot qaysi asarda uchraydi?
+&Vabo (A.Kamyu)
+$Dekameron (J.Bokachcho)
+$Qimorboz (Dostoyevskiy)
+$Revizor (N.Gogol)
+
+#Quyidagi yozuvchilarning qaysi birini asl kasbi shifokor bo’lgan?
+$Nikolay Gogol
+$Lev Tolstoy
+&Mixail Bulgakov
+$Mixail Lermontov
+
+#Rus adibi Bunin qachon Nobel mukofotini qo’lga kiritgan?
+&1933
+$1913
+$1954
+$1925
+
+#Bu ijodkor eng yosh Nobel laurenti hisoblanadi?
+$R.Tagor
+$I.Bunin
+&A.Kamyu
+$S.Lagerlof
+
+#Nazrul Islom qaysi asar qahramoni hisoblanadi?
+$Gitanjali
+$Olmos kamar
+&Ruhlar isyoni
+$Billur qandillar
+
+

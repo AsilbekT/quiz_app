@@ -17,4 +17,6 @@ urlpatterns = [
          name="get_tournaments"),
     path("tournaments/<int:id>/", views.get_tournament,
          name="get_tournament"),
+    path("upload_doc/", views.upload_doc,
+         name="upload_doc"),
 ]

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Text input fields</h2>
+
+<form action="{% url 'upload_doc' %}" method='post' encType="multipart/form-data">
+{% csrf_token %}
+  <select id="catagory" name='catagory'>
+    {% for catagory in catagories %}
+      <option value="{{ catagory.id }}">{{ catagory.name }}</option>
+    {% endfor %}
+  </select>
+  <input type="file" name="file" id="file" placeholder="Choose File"><br>
+  <input type="submit"  name="lname" value="submit">
+</form>
+
+<p>Note that the form itself is not visible.</p>
+
+<p>Also note that the default width of text input fields is 20 characters.</p>
+
+</body>
+</html>
+
