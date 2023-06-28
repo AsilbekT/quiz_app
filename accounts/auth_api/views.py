@@ -9,7 +9,7 @@ from rest_framework.schemas import ManualSchema
 from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.views import APIView
 from django.core.cache import cache
-from rest_framework import status
+from rest_framework.exceptions import AuthenticationFailed
 
 
 @api_view(['POST'])
@@ -43,13 +43,23 @@ def registration_view(request):
         data = {}
         if serializer.is_valid():
             account = serializer.save()
-            data['response'] = 'successfully registered new user.'
-            data['username'] = account.username
             token = Token.objects.get(user=account).key
             data['token'] = token
+            response = {
+                "status": "success",
+                "code": 200,
+                "message": 'Successfully registered new user.',
+                "data": data
+            }
         else:
             data = serializer.errors
-        return Response(data)
+            response = {
+                "status": "error",
+                "code": 400,
+                "message": 'Invalid registration data.',
+                "data": data
+            }
+        return Response(response)
 
 
 class ObtainAuthToken(APIView):
@@ -100,8 +110,19 @@ class ObtainAuthToken(APIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token = Token.objects.get(user=user)
-        # if token is None:
-        #     token, created = Token.objects.get_or_create(user=user)
-        #     cache.set('token', token)
-        return Response({'token': token.key})
+
+        try:
+            token = Token.objects.get(user=user).key
+            response_data = {
+                "token": token
+            }
+            response = {
+                "status": "success",
+                "code": 200,
+                "message": 'Authentication successful.',
+                "data": response_data
+            }
+            return Response(response)
+        except Token.DoesNotExist:
+            raise AuthenticationFailed(
+                "Unable to log in with provided credentials.")
