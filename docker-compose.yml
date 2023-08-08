@@ -2,10 +2,10 @@ version: '3.10'
 services:
   web:
     build: .
-    # command: gunicorn quiz_app.wsgi:application --bind 0.0.0.0:5001 --workers 4 --worker-class gevent
-    command: python manage.py runserver 0.0.0.0:5001
+    command: gunicorn quiz_app.wsgi:application --bind 0.0.0.0:5001 --workers 4 --worker-class gevent
+    # command: python manage.py runserver 0.0.0.0:5001
     volumes:
-      - /Users/asilbekturgunboev/Desktop/quiz_app-1:/code
+      - .:/code
     ports:
       - 5001:5001
     depends_on:
