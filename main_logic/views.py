@@ -1,7 +1,8 @@
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from .utils import handle_uploaded_file
+from .utils import handle_uploaded_file, get_random_ids
 from django.shortcuts import render
 from rest_framework.decorators import api_view
+from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -9,6 +10,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .forms import UploadFileForm
+import json
+from django.http import JsonResponse
 
 from django.core.files.storage import FileSystemStorage
 
@@ -124,9 +127,18 @@ def get_categories(request):
     """
     Retrieve the data of all categories.
     """
-    catagories_obj = Category.objects.all()
-    serializer = CategorySerializer(catagories_obj, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    data = cache.get('categories')
+
+    if data is None:
+        catagories_obj = Category.objects.all()
+
+        serializer = CategorySerializer(catagories_obj, many=True)
+        data = serializer.data
+
+        # Store data in cache for 15 minutes
+        cache.set('categories', data, 60 * 15)
+
+    return Response(data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(method='get', responses={200: QuestionSerializer(many=True)})
@@ -138,6 +150,8 @@ def get_questions(request, id):
     try:
         categories = Category.objects.get(id=id)
         questions = categories.category_questions.all()
+        random_ids = get_random_ids(10)
+        questions = Question.objects.in_bulk(random_ids).values()
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ObjectDoesNotExist:
@@ -177,12 +191,13 @@ def upload_doc(request):
         category = Category.objects.get(id=request.POST['catagory'])
         if form.is_valid():
             questions = handle_uploaded_file(request.FILES['file'])
+            # print(questions)
             for k, v in questions.items():
                 question = Question.objects.create(
-                    question_text=v[0]['question'], category=category)
+                    question_text=v[0]['text'], category=category)
                 options = v[1:]
                 options_to_create = [Option(question=question, option_text=option.get(
-                    'option', ''), is_correct='answer' in option) for option in options]
+                    'text'), is_correct=option.get('is_correct')) for option in options]
                 Option.objects.bulk_create(options_to_create)
 
             return render(request, 'upload_doc.html')
@@ -190,3 +205,46 @@ def upload_doc(request):
         catagories = Category.objects.all()
         form = UploadFileForm()
     return render(request, 'upload_doc.html', {'form': form, 'catagories': catagories})
+
+
+@api_view(['POST'])
+def get_results(request):
+    if request.method == "POST":
+        # Ensure the request has a body
+        if not request.body:
+            return JsonResponse({"error": "Empty payload"}, status=400)
+
+        # Parse the request body
+        try:
+            # data = json.loads(request.body.decode('utf-8'))
+            data = request.data
+            r = check_answers_from_dict(data)
+            print(r)
+            # {'users_results': [{'id': 2, 'answer': 1}, {'id': 3, 'answer': 1}]}
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+
+        # Validate the data (this is a simple example; you might have more complex validation)
+
+        return Response({}, status=status.HTTP_200_OK)
+
+    return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+# {'user_results': [{'id': 2, 'answer': 1}, {'id': 3, 'answer': 1}]}
+# {'users_results': [{'id': 2, 'answer': 1}, {'id': 3, 'answer': 1}]}
+
+
+def check_answers_from_dict(user_answers_dict):
+    number_of_correct_answers = 0
+
+    for answer_data in user_answers_dict['user_results']:
+        question_id = answer_data['id']
+        user_answer_id = answer_data['answer']
+
+        question = Question.objects.get(pk=question_id)
+        correct_option = question.get_options().filter(is_correct=True).first()
+        print(question, correct_option)
+        # if correct_option.id == user_answer_id:
+        #     number_of_correct_answers += 1
+
+    return number_of_correct_answers

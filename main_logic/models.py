@@ -50,6 +50,7 @@ class Question(models.Model):
     question_text = models.TextField()
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="category_questions")
+    objects = models.Manager()
 
     def __str__(self) -> str:
         return self.question_text
@@ -59,6 +60,12 @@ class Question(models.Model):
 
     def get_options(self):
         return self.options.all()
+
+    @classmethod
+    def get_random_questions(cls, number):
+        ids = cls.objects.values_list('id', flat=True)
+        random_ids = random.sample(list(ids), number)
+        return cls.objects.in_bulk(random_ids).values()
 
 
 class Option(models.Model):
@@ -94,3 +101,16 @@ class Tournament(models.Model):
                     self.tournament_code = unique_number
                     break
         super().save(*args, **kwargs)
+
+
+class AchievementType(models.Model):
+    achievement_type = models.CharField(max_length=200)
+
+
+class Achievement(models.Model):
+    achievenment_type = models.ForeignKey(
+        AchievementType, on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, blank=True, null=True)
+    number_of_questions = models.IntegerField(blank=True, null=True)
+    time_spent = models.IntegerField(blank=True, null=True)

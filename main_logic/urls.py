@@ -13,10 +13,15 @@ urlpatterns = [
     path("categories/<int:id>/questions/",
          views.get_questions, name="get_questions"),
 
+    path("results/",
+         views.get_results, name="get_results"),
+
     path("tournaments/", views.get_tournaments,
          name="get_tournaments"),
+
     path("tournaments/<int:id>/", views.get_tournament,
          name="get_tournament"),
+
     path("upload_doc/", views.upload_doc,
          name="upload_doc"),
 ]
