@@ -150,7 +150,7 @@ def get_questions(request, id):
     try:
         categories = Category.objects.get(id=id)
         questions = categories.category_questions.all()
-        random_ids = get_random_ids(10)
+        random_ids = get_random_ids(10, questions)
         questions = Question.objects.in_bulk(random_ids).values()
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -36,8 +36,9 @@ def check_users_achievenment(user):
     return
 
 
-def get_random_ids(count: int) -> list:
-    all_ids = Question.objects.values_list('id', flat=True)
+def get_random_ids(count: int, obj: object) -> list:
+    all_ids = obj.values_list('id', flat=True)
+    print(all_ids)
     if len(all_ids) < count:
         return all_ids
     else:
